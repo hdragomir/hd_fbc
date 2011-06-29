@@ -44,7 +44,7 @@ class hd_fbc{
     public static function admin_init(){
         $options = get_option('hd_fbc_options');
         if (empty($options['api_key']) || empty($options['app_secret']) || empty($options['appid'])) {
-            add_action('admin_notices', create_function( '', "echo '<div class=\"error\"><p>".sprintf(__('You need to have a look at the FB Connect <a href="%s">settings</a> page.', 'sfc'), admin_url('options-general.php?page=hd_fbc'))."</p></div>';" ) );
+            add_action('admin_notices', create_function( '', "echo '<div class=\"error\"><p>".sprintf(__('You need to have a look at the FB Connect <a href="%s">settings</a> page.'), admin_url('options-general.php?page=hd_fbc'))."</p></div>';" ) );
         }
 
         register_setting( 'hd_fbc_options', 'hd_fbc_options', 'hd_fbc::sanitize_options_input' );
@@ -58,8 +58,8 @@ class hd_fbc{
     }
 
     public static function add_admin_page(){
-        global $sfc_options_page;
-        $sfc_options_page = add_options_page(__('Facebook Connect'), __('Facebook Connect'), 'manage_options', 'hd_fbc', 'hd_fbc::options_page');
+        global $options_page;
+        $options_page = add_options_page(__('Facebook Connect'), __('Facebook Connect'), 'manage_options', 'hd_fbc', 'hd_fbc::options_page');
     }
 
     public static function options_page() {
