@@ -31,6 +31,7 @@ register_activation_hook(__FILE__, 'hd_fbc::activation_check');
 
 add_action('admin_init', 'hd_fbc::admin_init');
 add_action('admin_menu', 'hd_fbc::add_admin_page');
+add_action('wp_enqueue_scripts', 'hd_fbc::featureloader');
 
 class hd_fbc{
 
@@ -84,7 +85,6 @@ class hd_fbc{
         return $input;
     }
 
-
     public static function input__setting_api_key() {
         $options = get_option('hd_fbc_options');
         echo "<input type='text' id='fbapikey' name='hd_fbc_options[api_key]' value='{$options['api_key']}' size='40' /> ";
@@ -106,4 +106,22 @@ class hd_fbc{
         echo "<input type='text' id='fbfanpage' name='hd_fbc_options[fanpage]' value='{$options['fanpage']}' size='40' />";
     }
 
+
+    public static function user(){
+        $options = get_option('hd_fbc_options');
+        include_once 'facebook-platform/facebook.php';
+        $fb = new Facebook($options['api_key'], $options['app_secret']);
+        return $fb->get_loggedin_user();
+    }
+
+
+
+    public static function featureloader() {
+        wp_enqueue_script( 'fb-featureloader', ( $_SERVER['HTTPS'] == 'on' ?
+                                                'https://ssl.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/'
+                                                : 'http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/' )
+                                                . get_locale(),
+                           array(), '0.4', false);
+    }
+    
 }
