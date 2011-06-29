@@ -115,7 +115,6 @@ class hd_fbc{
     }
 
 
-
     public static function featureloader() {
         wp_enqueue_script( 'fb-featureloader', ( $_SERVER['HTTPS'] == 'on' ?
                                                 'https://ssl.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/'
@@ -123,5 +122,28 @@ class hd_fbc{
                                                 . get_locale(),
                            array(), '0.4', false);
     }
-    
+
+    public static function ready_html($hook_id = 'fb-button'){ ?>
+        <script type="text/javascript">
+        window.FB && FB.ensureInit( function(){
+            FB.Facebook.apiClient.users_hasAppPermission('email',function(res,ex){
+                if( !res ) {
+                    FB.Connect.showPermissionDialog("email", function(perms) {
+                        if (perms) {
+                            window.location.reload();
+                        }
+                    });
+                }
+            });
+
+            FB.Connect.ifUserConnected( function() {
+                documenty.getElementById('<?php echo $hook_id; ?>').innerHTML = ('<input class="button-primary" type="button" onclick="FB.Connect.logoutAndRedirect(\'<?php bloginfo('home'); ?>\');" value="<?php echo __('Logout'); ?>" />');
+            }, function() {
+                documenty.getElementById('<?php echo $hook_id; ?>').innerHTML = ('<fb:login-button v="2" perms="email" onlogin="location.reload(true);"><fb:intl><?php echo addslashes(__('Connect with Facebook', 'sfc')); ?></fb:intl></fb:login-button>');
+                FB.XFBML.Host.parseDomTree();
+            });
+        });
+        </script>
+    <?php }
+
 }
